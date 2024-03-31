@@ -11,12 +11,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.authenticity.Message;
 import com.authenticity.MessageRetriever;
+import com.authenticity.Responses.RestJsonUtil;
+import com.authenticity.Responses.VolleyResponse;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements VolleyResponse {
 
     private static final int PERMISSION_REQUEST_CODE = 123;
     private TextView messageTextView;
@@ -42,8 +46,11 @@ public class MainActivity extends AppCompatActivity {
         if (!messages.isEmpty()) {
             StringBuilder messageBuilder = new StringBuilder();
             for (Message message : messages) {
-                messageBuilder.append("From: ").append(message.getSender()).append("\n")
-                        .append("Message: ").append(message.getMessageBody()).append("\n\n");
+                messageBuilder.append("From: ").append(message.getSender()).append("\n").append("Message: ").append(message.getMessageBody()).append("\n\n");
+                MessageAuthenticityRequest request = new MessageAuthenticityRequest();
+                request.sender = message.getSender();
+                request.messageBody = message.getMessageBody();
+                RestJsonUtil.postJson(request, new MessageAuthenticityResponse(), Volley.newRequestQueue(this), "messages", this);
             }
             messageTextView.setText(messageBuilder.toString());
             return;
@@ -63,5 +70,15 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onResponseSuccess(String json) {
+
+    }
+
+    @Override
+    public void onResponseError(VolleyError error) {
+
     }
 }

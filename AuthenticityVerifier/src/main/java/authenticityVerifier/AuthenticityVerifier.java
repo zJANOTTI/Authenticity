@@ -8,7 +8,6 @@ public class AuthenticityVerifier {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AuthenticityVerifier.class, args);
-	
 	}
 
 }
