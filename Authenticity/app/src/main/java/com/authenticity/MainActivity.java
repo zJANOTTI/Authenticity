@@ -13,8 +13,6 @@ import androidx.core.content.ContextCompat;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.authenticity.Message;
-import com.authenticity.MessageRetriever;
 import com.authenticity.Responses.RestJsonUtil;
 import com.authenticity.Responses.VolleyResponse;
 
@@ -72,12 +70,10 @@ public class MainActivity extends AppCompatActivity implements VolleyResponse {
         }
     }
 
-    @Override
     public void onResponseSuccess(String json) {
 
     }
 
-    @Override
     public void onResponseError(VolleyError error) {
 
     }

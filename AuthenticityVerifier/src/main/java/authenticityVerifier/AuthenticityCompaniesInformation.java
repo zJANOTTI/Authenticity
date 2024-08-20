@@ -4,7 +4,7 @@ public class AuthenticityCompaniesInformation {
 	private  String PhoneNumber;
 	private  String CompanyName;
 
-	//TODO create all the elements needed to retrieve CompanyName, ComapnyImage(Maybe).
+	//TODO create all the elements needed to retrieve CompanyName, CompanyImage(Maybe).
 
 	public String getPhoneNumber() {
 		return PhoneNumber;

@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 public class RestJsonUtil {
     public static void postJson(RequestJson request, ResponseJson response, RequestQueue queue, String service, VolleyResponse activity) {
         //@HINT url is based on your local host.
-        String url = "http://192.168.1.109:8090/" + service;
+        String url = "http://192.168.1.110:8090/" + service;
         String json;
         try {
             json = request.toJSON();
@@ -42,7 +42,7 @@ public class RestJsonUtil {
     }
 
     public static void getJson( ResponseJson response, RequestQueue queue, String service, VolleyResponse volley) {
-        String url = "http://192.168.1.109:8090/" + service;
+        String url = "http://192.168.1.110:8090/" + service;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 success -> volley.onResponseSuccess(success), error -> volley.onResponseError(error));
