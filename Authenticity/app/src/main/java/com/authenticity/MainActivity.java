@@ -16,6 +16,9 @@ import com.android.volley.toolbox.Volley;
 import com.authenticity.Responses.RestJsonUtil;
 import com.authenticity.Responses.VolleyResponse;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements VolleyResponse {
@@ -71,7 +74,18 @@ public class MainActivity extends AppCompatActivity implements VolleyResponse {
     }
 
     public void onResponseSuccess(String json) {
+        try {
+            JSONObject objJSON = new JSONObject(json);
+            Boolean status = objJSON.getBoolean("status");
 
+            if (status) {
+                String company = objJSON.getString("company");
+            }
+
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void onResponseError(VolleyError error) {
