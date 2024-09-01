@@ -1,51 +1,60 @@
 package com.authenticity.Responses;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.StringRequest;
+import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class RestJsonUtil {
-    public static void postJson(RequestJson request, ResponseJson response, RequestQueue queue, String service, VolleyResponse activity) {
-        //@HINT url is based on your local host.
-        String url = "http://192.168.1.110:8090/" + service;
-        String json;
+
+    public static String sendPostRequest(String service, RequestJson request) {
+        HttpURLConnection urlConnection = null;
         try {
-            json = request.toJSON();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            activity.onResponseError(null);
-            return;
-        }
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                success -> activity.onResponseSuccess(success), error -> activity.onResponseError(error)) {
+            URL url = new URL("http://192.168.1.110:8090/" + service);
+            urlConnection = (HttpURLConnection) url.openConnection();
 
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
+            // Configure connection properties
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            urlConnection.setDoOutput(true);
+
+            // Write the request body
+            OutputStream os = new BufferedOutputStream(urlConnection.getOutputStream());
+            String json = null;
+            try {
+                json = request.toJSON();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
+            os.write(json.getBytes());
+            os.flush();
+            os.close();
 
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return json.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.wtf("Unsupported Encoding. Bytes of %s using %s", json, "utf-8");
-                    return null;
+            // Check response code and handle input stream
+            int responseCode = urlConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                reader.close();
+                return response.toString();
+            } else {
+                return "Error: " + responseCode;
             }
-        };
-        queue.add(stringRequest);
-    }
-
-    public static void getJson( ResponseJson response, RequestQueue queue, String service, VolleyResponse volley) {
-        String url = "http://192.168.1.110:8090/" + service;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                success -> volley.onResponseSuccess(success), error -> volley.onResponseError(error));
-        queue.add(stringRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Exception: " + e.getMessage();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
     }
 }

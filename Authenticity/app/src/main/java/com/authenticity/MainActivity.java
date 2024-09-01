@@ -3,6 +3,7 @@ package com.authenticity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,14 +15,13 @@ import androidx.core.content.ContextCompat;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.authenticity.Responses.RestJsonUtil;
-import com.authenticity.Responses.VolleyResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements VolleyResponse {
+public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 123;
     private TextView messageTextView;
@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements VolleyResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         messageTextView = findViewById(R.id.messageTextView);
 
@@ -51,7 +53,8 @@ public class MainActivity extends AppCompatActivity implements VolleyResponse {
                 MessageAuthenticityRequest request = new MessageAuthenticityRequest();
                 request.sender = message.getSender();
                 request.messageBody = message.getMessageBody();
-                RestJsonUtil.postJson(request, new MessageAuthenticityResponse(), Volley.newRequestQueue(this), "messages", this);
+                String response = RestJsonUtil.sendPostRequest("messages", request);
+                messageBuilder.append("Authentication: ").append(response);
             }
             messageTextView.setText(messageBuilder.toString());
             return;
