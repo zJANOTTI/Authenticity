@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.authenticity.Responses.RestJsonUtil;
 
 import org.json.JSONException;
@@ -49,12 +48,28 @@ public class MainActivity extends AppCompatActivity {
         if (!messages.isEmpty()) {
             StringBuilder messageBuilder = new StringBuilder();
             for (Message message : messages) {
-                messageBuilder.append("From: ").append(message.getSender()).append("\n").append("Message: ").append(message.getMessageBody()).append("\n\n");
                 MessageAuthenticityRequest request = new MessageAuthenticityRequest();
                 request.sender = message.getSender();
                 request.messageBody = message.getMessageBody();
                 String response = RestJsonUtil.sendPostRequest("messages", request);
-                messageBuilder.append("Authentication: ").append(response);
+
+                JSONObject objJSON = null;
+                String authentication = "Failed";
+                try {
+                    objJSON = new JSONObject(response);
+                    Boolean status = objJSON.getBoolean("status");
+
+                    if (status) {
+                        String company = objJSON.getString("company");
+                        authentication = "Completed\n" + "Company: " + company;
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+                messageBuilder.append("Authentication: ").append(authentication);
+                messageBuilder.append("\nFrom: ").append(message.getSender()).append("\n").append("Message: ").append(message.getMessageBody()).append("\n\n");
+
             }
             messageTextView.setText(messageBuilder.toString());
             return;
@@ -76,22 +91,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onResponseSuccess(String json) {
-        try {
-            JSONObject objJSON = new JSONObject(json);
-            Boolean status = objJSON.getBoolean("status");
-
-            if (status) {
-                String company = objJSON.getString("company");
-            }
-
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void onResponseError(VolleyError error) {
-
+    public void refresh(View v) {
+        retrieveAndDisplayMessages();
     }
 }
