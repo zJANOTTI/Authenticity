@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             StringBuilder messageBuilder = new StringBuilder();
             for (Message message : messages) {
                 MessageAuthenticityRequest request = new MessageAuthenticityRequest();
-                request.sender = message.getSender();
+                request.sender = message.getSender().replaceAll("[^a-zA-Z0-9]", "");
                 request.messageBody = message.getMessageBody();
                 String response = RestJsonUtil.sendPostRequest("messages", request);
 
