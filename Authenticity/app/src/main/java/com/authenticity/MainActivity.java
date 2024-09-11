@@ -2,11 +2,15 @@ package com.authenticity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,11 +23,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 123;
     private TextView messageTextView;
+    private TextView refreshButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         messageTextView = findViewById(R.id.messageTextView);
+        refreshButton = findViewById(R.id.refresh);
 
         // Check if permission is granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
@@ -92,6 +101,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refresh(View v) {
+        refreshButton.setEnabled(false);
         retrieveAndDisplayMessages();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                refreshButton.setEnabled(true);
+            }
+        };
+        scheduler.schedule(task, 60, TimeUnit.SECONDS);
+        scheduler.shutdown();
     }
 }
