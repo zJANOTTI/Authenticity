@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private void retrieveAndDisplayMessages() {
         List<Message> messages = MessageRetriever.retrieveMessages(this);
         if (!messages.isEmpty()) {
-            StringBuilder messageBuilder = new StringBuilder();
+            SpannableStringBuilder messageBuilder = new SpannableStringBuilder();
             for (Message message : messages) {
                 MessageAuthenticityRequest request = new MessageAuthenticityRequest();
                 request.sender = message.getSender().replaceAll("[^a-zA-Z0-9]", "");
@@ -76,11 +77,13 @@ public class MainActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                messageBuilder.append("Authentication: ").append(authentication);
+                SpannableString span = colorImplementation(authentication);
+
+                messageBuilder.append("Authentication: ").append(span);
                 messageBuilder.append("\nFrom: ").append(message.getSender()).append("\n").append("Message: ").append(message.getMessageBody()).append("\n\n");
 
             }
-            messageTextView.setText(messageBuilder.toString());
+            messageTextView.setText(messageBuilder);
             return;
         }
 
@@ -112,5 +115,13 @@ public class MainActivity extends AppCompatActivity {
         };
         scheduler.schedule(task, 60, TimeUnit.SECONDS);
         scheduler.shutdown();
+    }
+
+    public SpannableString colorImplementation(String text) {
+        SpannableString spannable = new SpannableString(text);
+        int color = text.equals("Failed") ? Color.RED : Color.GREEN;
+        int length = text.equals("Failed") ? 6 : 9;
+        spannable.setSpan(new ForegroundColorSpan(color), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 }
