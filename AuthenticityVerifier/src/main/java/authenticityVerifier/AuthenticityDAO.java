@@ -14,7 +14,10 @@ public class AuthenticityDAO {
 	private String query = null;
 
 
-	public String authenticateNumber(String phone_number) {
+	public String authenticateNumber(String body) {
+		JSONObject objJSON = new JSONObject(body);
+		String phone_number = objJSON.getString("sender");
+		String message = objJSON.getString("messageBody");
 		query = "SELECT COMPANY FROM COMPANIES WHERE TELEPHONE = ?";
 		JSONObject jsonResponse = new JSONObject();
 		try  {
@@ -26,10 +29,8 @@ public class AuthenticityDAO {
 
 			if (result.next()) {
 				String company = result.getString("COMPANY");
-				System.out.println("Phone number found in the database. Company: " + company);
-
 				jsonResponse.put("company", company);
-				jsonResponse.put("status", true);
+				jsonResponse.put("status", 1);
 
 				return jsonResponse.toString();
 			}
@@ -39,7 +40,12 @@ public class AuthenticityDAO {
 
 		}
 
-		jsonResponse.put("status", false);
+		if (!SpamVerifier.isSpam(message)) {
+			jsonResponse.put("status", 2);
+			return jsonResponse.toString();
+		}
+
+		jsonResponse.put("status", 0);
 		return jsonResponse.toString();
 	}
 }

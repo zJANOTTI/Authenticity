@@ -64,30 +64,36 @@ public class MainActivity extends AppCompatActivity {
                 String response = RestJsonUtil.sendPostRequest("messages", request);
 
                 JSONObject objJSON = null;
-                String authentication = "Failed";
+                String authentication = "Numero Suspeito";
                 try {
                     objJSON = new JSONObject(response);
-                    Boolean status = objJSON.getBoolean("status");
+                    int status = objJSON.getInt("status");
 
-                    if (status) {
+                    if (status == 1) {
                         String company = objJSON.getString("company");
-                        authentication = "Completed\n" + "Company: " + company;
+                        authentication = "Numero Autênticado\n" + "Empresa: " + company;
                     }
+
+                    if (status == 2) {
+                        String company = "Não indentificada";
+                        authentication = "Autênticado por mensagem\n" + "Empresa: " + company;
+                    }
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
 
                 SpannableString span = colorImplementation(authentication);
 
-                messageBuilder.append("Authentication: ").append(span);
-                messageBuilder.append("\nFrom: ").append(message.getSender()).append("\n").append("Message: ").append(message.getMessageBody()).append("\n\n");
+                messageBuilder.append("Autenticação: ").append(span);
+                messageBuilder.append("\nDe: ").append(message.getSender()).append("\n").append("Mensagem: ").append(message.getMessageBody()).append("\n\n");
 
             }
             messageTextView.setText(messageBuilder);
             return;
         }
 
-        Toast.makeText(this, "No messages found", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Mensagens não encontradas", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -99,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Permissão negada", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -119,8 +125,14 @@ public class MainActivity extends AppCompatActivity {
 
     public SpannableString colorImplementation(String text) {
         SpannableString spannable = new SpannableString(text);
-        int color = text.equals("Failed") ? Color.RED : Color.GREEN;
-        int length = text.equals("Failed") ? 6 : 9;
+
+        if (text.contains("Autênticado por mensagem")) {
+            spannable.setSpan(new ForegroundColorSpan(Color.rgb(255, 128, 0)), 0, 24, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return spannable;
+        }
+
+        int color = text.equals("Numero Suspeito") ? Color.RED : Color.rgb(0, 210, 0);
+        int length = text.equals("Numero Suspeito") ? 15 : 18;
         spannable.setSpan(new ForegroundColorSpan(color), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
     }

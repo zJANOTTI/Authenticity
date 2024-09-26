@@ -16,7 +16,6 @@ public class AuthenticityController {
 
 	@PostMapping("/messages")
 	public String AuthenticateMessages(@RequestBody String body) {
-		JSONObject objJSON = new JSONObject(body);
-		return DAO.authenticateNumber(objJSON.getString("sender"));
+		return DAO.authenticateNumber(body);
 	}
 }
