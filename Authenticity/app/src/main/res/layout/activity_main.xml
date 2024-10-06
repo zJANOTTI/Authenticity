@@ -32,7 +32,7 @@
         android:backgroundTint="#47f2e2"
         android:onClick="refresh"
         android:radius="24dp"
-        android:text="@string/refresh"
+        android:text="Atualizar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
