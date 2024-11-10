@@ -1,0 +1,1 @@
+scp -i ../PEM/desktop.pem target/AuthenticityVerifier-0.0.1-SNAPSHOT.jar ec2-user@ec2-18-212-171-99.compute-1.amazonaws.com:~
