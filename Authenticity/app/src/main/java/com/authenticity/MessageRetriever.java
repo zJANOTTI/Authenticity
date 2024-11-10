@@ -8,6 +8,7 @@ import com.android.volley.toolbox.Volley;
 import com.authenticity.Responses.RestJsonUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MessageRetriever {
@@ -15,7 +16,10 @@ public class MessageRetriever {
     public static List<Message> retrieveMessages(Context context) {
         List<Message> messages = new ArrayList<>();
         Uri uri = Uri.parse("content://sms/inbox");
-        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+
+        // Limit the query to the 25 most recent messages
+        String sortOrder = "date DESC LIMIT 15";
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, sortOrder);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
