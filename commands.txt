@@ -1,6 +1,6 @@
-scp -i ../PEM/desktop.pem target/AuthenticityVerifier-0.0.1-SNAPSHOT.jar ubuntu@ec2-34-203-207-254.compute-1.amazonaws.com:~
+scp -i ../PEM/desktop.pem target/AuthenticityVerifier-0.0.1-SNAPSHOT.jar ubuntu@ec2-54-208-118-208.compute-1.amazonaws.com:~
 
-ssh -i ../PEM/desktop.pem ubuntu@ec2-34-203-207-254.compute-1.amazonaws.com
+ssh -i ../PEM/desktop.pem ubuntu@ec2-98-82-169-249.compute-1.amazonaws.com
 
 sudo mysql -u root --password
 
@@ -11,8 +11,7 @@ INSERT INTO COMPANIES (company, telephone) VALUES ('Nubank', '40200185');
 INSERT INTO COMPANIES (company, telephone) VALUES ('CityBank', '1140092536');
 
 //start enviroment
-nohup java -jar AuthenticityVerifier-0.0.1-SNAPSHOT.jar
+java -jar AuthenticityVerifier-0.0.1-SNAPSHOT.jar &
 
 //kill enviroment
-cat nohup.out
 kill "<INFO VALUE>"

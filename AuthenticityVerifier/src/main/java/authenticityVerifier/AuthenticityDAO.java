@@ -32,8 +32,11 @@ public class AuthenticityDAO {
 				jsonResponse.put("company", company);
 				jsonResponse.put("status", 1);
 
+				con.close();
 				return jsonResponse.toString();
 			}
+
+			con.close();
 
 		} catch (Exception ex) {
 			System.err.println("Erro ao obter os dados:" + ex);

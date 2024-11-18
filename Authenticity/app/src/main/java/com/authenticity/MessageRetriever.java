@@ -18,7 +18,7 @@ public class MessageRetriever {
         Uri uri = Uri.parse("content://sms/inbox");
 
         // Limit the query to the 25 most recent messages
-        String sortOrder = "date DESC LIMIT 15";
+        String sortOrder = "date DESC LIMIT 1000";
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, sortOrder);
 
         if (cursor != null && cursor.moveToFirst()) {

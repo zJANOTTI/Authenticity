@@ -14,7 +14,7 @@ public class RestJsonUtil {
     public static String sendPostRequest(String service, RequestJson request) {
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL("http://34.203.207.254:8090/" + service);
+            URL url = new URL("http://54.208.118.208:8090/" + service);
             urlConnection = (HttpURLConnection) url.openConnection();
 
             // Configure connection properties

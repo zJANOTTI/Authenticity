@@ -31,6 +31,12 @@ public class SpamVerifier {
         SPAM_KEYWORDS.add("va diretamente");
         SPAM_KEYWORDS.add("acesse");
         SPAM_KEYWORDS.add("bonus");
+        SPAM_KEYWORDS.add("https");
+        SPAM_KEYWORDS.add("http");
+        SPAM_KEYWORDS.add(".com");
+        SPAM_KEYWORDS.add(".li");
+        SPAM_KEYWORDS.add("compre_agora");
+        SPAM_KEYWORDS.add(".is");
     }
 
     public static boolean isSpam(String body) {
